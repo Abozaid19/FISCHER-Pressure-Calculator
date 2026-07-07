@@ -1,16 +1,20 @@
 import streamlit as st
+import os
 
 # Set up the page title and clean layout
 st.set_page_config(page_title="Hydraulic Pressure Calculator", layout="centered")
 
 # --- Corporate Header ---
-# Using the exact image name uploaded to GitHub
 logo_path = "logo.png"
 
-# Center the logo using HTML
-st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
-st.image(logo_path, width=200)
-st.markdown('</div>', unsafe_allow_html=True)
+# Safety check: Only try to load the image if the file actually exists
+if os.path.exists(logo_path):
+    st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
+    st.image(logo_path, width=200)
+    st.markdown('</div>', unsafe_allow_html=True)
+else:
+    # This won't crash the app, but will help you troubleshoot
+    st.caption("⚠️ Logo file not found. Ensure the image is named exactly 'logo.png' in GitHub.")
 
 # Centered main title
 st.markdown('<h1 style="text-align: center;">Target Load to Pressure Converter</h1>', unsafe_allow_html=True)
@@ -25,12 +29,10 @@ STATIC_AREA = 25.10
 col1, col2 = st.columns(2)
 
 with col1:
-    # Display the Area as static text (not editable)
     st.write("") 
     st.markdown(f"<p style='font-size: 1.1em; color: black; margin-top: 5px;'><b>Cylinder Area (cm²):</b> {STATIC_AREA:.2f}</p>", unsafe_allow_html=True)
 
 with col2:
-    # The ONLY editable input field
     force = st.number_input("Target Force (kN):", value=30.00, format="%.2f")
 
 st.markdown("---")
@@ -39,11 +41,9 @@ st.markdown("---")
 if STATIC_AREA > 0:
     pressure = force / (STATIC_AREA * 0.01)
     
-    # Large, professional result display
     st.subheader("REQUIRED PRESSURE:")
     st.metric(label="", value=f"{pressure:.2f} bar")
 
-# Floating space to push footer down
 st.write("")
 st.write("")
 
